@@ -6,9 +6,9 @@ with open('dsmail.txt', 'r') as f:
     lines = f.readlines()
     with open('dspassword.txt', 'r') as file:
         passwords = file.readlines()
-    for username in lines:
+    for i in range(len(lines)):
         for password in passwords:
-            username = username.rstrip('\n')
+            username = lines[i].rstrip('\n')
             password = password.rstrip('\n')
-            login(username, password)
-            time.sleep(6)
+            login(username, password, i)
+            time.sleep(2)

